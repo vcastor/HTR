@@ -2,6 +2,8 @@ PROGRAM HartreeFockRoothaan
 
 !***********************************************************************
 !       This program do Hartree-Fock-Roothaan calculation method 
+! Restricted Hartree-Fock-Roothaan calculation
+! (closed shell)
 !***********************************************************************
 ! PLEASE DO NOT ATTEMP TO SIMPLIFY THIS CODE.    
 ! KEEP THE SPACE SHUTTLE FLYING.     
@@ -43,26 +45,41 @@ CHARACTER (LEN=100)                              :: input_name
 !-----------------------------------------------------------------------------------------------------------------------------------
 
 !-----------------------------------------------------------------------
-!********                INPUT DATA & BASIS SET                 ********
+!********                      INPUT DATA                       ********
 !-----------------------------------------------------------------------
-! The program will CALL a FORTRAN SUBROUTINE to read the input file.  --
-! Examples are given in a directory 'expamples_inputs'. The program,  --
-! 'ask' about the input file where the system is. Actually the laucher
-! stript does that.
-! Giving the input name the program will get: over charge, number of  --
-! atoms and which atoms are in the system, its coordinates, and also, --
-! about the basis function, how many primitive gaussian are at every  --
-! basis function, and $\zeta$ and $d_{i,j}$ values for each basis     --
-! function and an info flag to know if the input file has any syntaxis
-! error.
-! NOTE: the $d_{i,j}$ are already normalized, IMPORTANT to know how the
-! program will compute the integrals.
+! The program will CALL a FORTRAN SUBROUTINE to read the input file.
+! We will get the basis set name, the molecule over charge, how many
+! atoms, the chemical symbols of its atoms, the coordinates of its, and
+! an information flag (to know if the input has something wrong). The
+! really first argument is the input file name.
 !-----------------------------------------------------------------------
 
 READ(UNIT=5,FMT='(100A)') input_name
 
-CALL NEW_READER(input_name, q, n_atoms, atom, xyz, b_functions, atomic_number, n_basisf_pa, n_pri_bf, max_prim, n_max_zeta, zeta, &
-                d, info)
+CALL READER(input_name, basis_set, q, n_atoms, atom, xyz, info)
+
+IF (info .NE. 0) THEN
+    WRITE(*,*) info
+    STOP                                          !OFF TO SEE THE WIZARD
+ENDIF
+
+!-----------------------------------------------------------------------
+!********                      BASIS SET                        ********
+!-----------------------------------------------------------------------
+! The program will CALL a FORTRAN SUBROUTINE to get the necessary
+! information about the basis set.
+! We will give the basis set name, how many atoms and which atoms we
+! have, getting the number of basis functions, how many basis functions
+! per atom, how many primitive Gaussians functions per basis function,
+! the $\zeta$ and $d_{i,j}$ values for each basis function and a info
+! flag if we have any error.
+! NOTE: the $d_{i,j}$ are already normalized, IMPORTANT to know how the
+! program will compute the integrals.
+!-----------------------------------------------------------------------
+
+ALLOCATE(atomic_number(n_atoms), n_basisf_pa(n_atoms))
+
+CALL AT_BASIS(basis_set, n_atoms, atom, b_functions, atomic_number, n_basisf_pa, n_pri_bf, max_prim, n_max_zeta, zeta, d, info)
 
 IF (info .NE. 0) THEN
     WRITE(*,*) info
@@ -89,7 +106,7 @@ CALL DISTANCES(n_atoms, b_functions, n_basisf_pa, xyz, xyz_bf, distance_atoms, d
 
 ALLOCATE(Ecoulomb(n_atoms,n_atoms))
 
-CALL BOCInteraction(n_atoms, distance_atoms, atomic_number, Ecoulomb, E_cou)
+CALL NNBOI(n_atoms, distance_atoms, atomic_number, Ecoulomb, E_cou)
 
 !-----------------------------------------------------------------------
 !********                ELECTRONS AND ORBITALS                 ********
