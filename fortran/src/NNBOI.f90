@@ -11,11 +11,11 @@ REAL(KIND=8), DIMENSION(n_atoms,n_atoms) ::  distance_mat, Ecoulomb
 
 E_cou = 0.d0
 DO i = 1, n_atoms-1
-    DO j = i+1, n_atoms
-        Ecoulomb(i,j) = f_coulomb(atomic_number(i), atomic_number(j), distance_mat(i,j))
-        Ecoulomb(j,i) = Ecoulomb(i,j)
-        E_cou = E_cou + Ecoulomb(i,j)
-    ENDDO
+  DO j = i+1, n_atoms
+    Ecoulomb(i,j) = f_coulomb(atomic_number(i), atomic_number(j), distance_mat(i,j))
+    Ecoulomb(j,i) = Ecoulomb(i,j)
+    E_cou = E_cou + Ecoulomb(i,j)
+  ENDDO
 ENDDO
 
 ENDSUBROUTINE NNBOI

@@ -43,27 +43,27 @@ ENDDO
 zeta(:,:) = 0.d0; d(:,:) = 0.d0
 b_functions = 0; l = 1
 DO i = 1, n_atoms
-    OPEN(12,FILE=file_basis_set(i))
-        READ(12,*) atomic_number(i), n_basisf_pa(i)
-!      (at the i'th atom, at the j'th basis of the i'th atom)
-        DO j = 1, n_basisf_pa(i)
-            READ (12,*) n_prim(i,j)
-            n_pri_bf(l)      = n_prim(i,j)
-!      (at the i'th atom, at the j'th basis of the i'th atom, at th k'th zeta/d
-            DO k = 1, n_prim(i,j)
-                READ(12,*) zeta_atom(i,j,k), d_atom(i,j,k)
-                zeta(l,k)   = zeta_atom(i,j,k)
-                d(l,k)      = d_atom(i,j,k)
-            ENDDO
-        l = l + 1
-        ENDDO
-    CLOSE(12)
-    b_functions = b_functions + n_basisf_pa(i)
+  OPEN(12,FILE=file_basis_set(i))
+    READ(12,*) atomic_number(i), n_basisf_pa(i)
+!   (at the i'th atom, at the j'th basis of the i'th atom)
+    DO j = 1, n_basisf_pa(i)
+      READ (12,*) n_prim(i,j)
+      n_pri_bf(l)      = n_prim(i,j)
+!     (at the i'th atom, at the j'th basis of the i'th atom, at th k'th zeta/d
+      DO k = 1, n_prim(i,j)
+        READ(12,*) zeta_atom(i,j,k), d_atom(i,j,k)
+        zeta(l,k)   = zeta_atom(i,j,k)
+        d(l,k)      = d_atom(i,j,k)
+      ENDDO
+      l = l + 1
+    ENDDO
+  CLOSE(12)
+  b_functions = b_functions + n_basisf_pa(i)
 ENDDO
 l = l - 1
 
 IF (l .NE. b_functions) THEN
-    info = 201
+  info = 201
 ENDIF
 
 ENDSUBROUTINE AT_BASIS

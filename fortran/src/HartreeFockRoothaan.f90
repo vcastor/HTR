@@ -65,8 +65,8 @@ CALL NEW_READER(input_name, q, n_atoms, atom, xyz, b_functions, atomic_number, n
                 d, info)
 
 IF (info .NE. 0) THEN
-    WRITE(*,*) info
-    STOP                                          !OFF TO SEE THE WIZARD
+  WRITE(*,*) info
+  STOP                                            !OFF TO SEE THE WIZARD
 ENDIF
 
 !-----------------------------------------------------------------------
@@ -97,7 +97,7 @@ CALL BOCInteraction(n_atoms, distance_atoms, atomic_number, Ecoulomb, E_cou)
 
 n_ele = 0
 DO i = 1, n_atoms                   !electrons as nuclei charge per atom
-    n_ele = n_ele + atomic_number(i)  
+  n_ele = n_ele + atomic_number(i)  
 ENDDO
 n_ele = n_ele - q                         !do not forget the over charge
 
@@ -119,8 +119,8 @@ CALL INTEGRALS_HF(b_functions, n_atoms, atomic_number, n_pri_bf, xyz, xyz_bf, di
                   d, S, T, V, TwoEleInt, info)
 
 IF (info .NE. 0) THEN
-    WRITE(*,*) info
-    STOP                                          !OFF TO SEE THE WIZARD
+  WRITE(*,*) info
+  STOP                                            !OFF TO SEE THE WIZARD
 ENDIF
 
 !-----------------------------------------------------------------------------------------------------------------------------------
@@ -156,23 +156,23 @@ DO WHILE (threshold .GT. 1d-10)
 
     P(:,:) = 0.d0                            !Restart the sum every loop
     DO i = 1, b_functions                        !Density matrix: P(i,j)
-        DO j = 1, b_functions
-            DO k = 1, n_occ
-                P(i,j) = P(i,j) + C(i,k)*C(j,k)
-            ENDDO
+      DO j = 1, b_functions
+        DO k = 1, n_occ
+          P(i,j) = P(i,j) + C(i,k)*C(j,k)
         ENDDO
+      ENDDO
     ENDDO
 
     Jm(:,:) = 0.d0; Km(:,:) = 0.d0       !restart every loop
     DO i = 1, b_functions                !J = P * (\mu\nu|\lambda\sigma)
-        DO j = 1, b_functions            !K = P * (\mu\lambda|\nu\sigma)
-            DO k = 1, b_functions
-                DO l = 1, b_functions
-                    Jm(i,j) = Jm(i,j) + P(k,l)*TwoEleInt(i,j,l,k)
-                    Km(i,j) = Km(i,j) + P(k,l)*TwoEleInt(i,l,k,j)
-                ENDDO
-            ENDDO
+      DO j = 1, b_functions              !K = P * (\mu\lambda|\nu\sigma)
+        DO k = 1, b_functions
+          DO l = 1, b_functions
+            Jm(i,j) = Jm(i,j) + P(k,l)*TwoEleInt(i,j,l,k)
+            Km(i,j) = Km(i,j) + P(k,l)*TwoEleInt(i,l,k,j)
+          ENDDO
         ENDDO
+      ENDDO
     ENDDO
 !   F      = T + V      + P(2(\mu\nu|\lambda\sigma)-(\mu\lambda|\nu\sigma))
     F(:,:) = Hcore(:,:) + 2.d0*Jm(:,:) - Km(:,:)                           !F = H^{core} + 2J - K 
@@ -189,16 +189,16 @@ DO WHILE (threshold .GT. 1d-10)
 !                                                            If we rotate the matrix F, this is the correct LAPACK SUBROUTINE
 !                                                            CALL DSYEV('V', 'L', b_functions, F, b_functions, E, work, lwork, info)
     IF (info .NE. 0) THEN
-        WRITE(*,*) info
-        STOP                                      !OFF TO SEE THE WIZARD
+      WRITE(*,*) info
+      STOP                                        !OFF TO SEE THE WIZARD
     ENDIF
 
     aux1 = 0.d0; aux2 = 0.d0                              !Is converged?
     DO i = 1, b_functions                                 
-        DO j = 1, b_functions
-            aux1 = (P(i,j) - Pb(i,j))
-            aux2 = aux2 + aux1*aux1
-        ENDDO
+      DO j = 1, b_functions
+        aux1 = (P(i,j) - Pb(i,j))
+        aux2 = aux2 + aux1*aux1
+      ENDDO
     ENDDO
 
     threshold = DSQRT(aux2*1.d0/REAL(b_functions*b_functions))
@@ -212,9 +212,9 @@ ENDDO                                                                   !Close t
 
 E_ele = 0.d0              
 DO i = 1, b_functions
-    DO j = 1, b_functions
-        E_ele = E_ele + P(j,i)*(Hcore(i,j) + F(i,j))
-    ENDDO
+  DO j = 1, b_functions
+    E_ele = E_ele + P(j,i)*(Hcore(i,j) + F(i,j))
+  ENDDO
 ENDDO
 
 !                                                                               ya mero cerramos el chiringuito/changarro xddxdxxdxd
@@ -233,7 +233,7 @@ OPEN(616,FILE='./tmp/out.out')
     WRITE(616,FMT='(A28,I3)') "Number of basis functions: ", b_functions
     WRITE(616,*) "Coordinates of the system in bohr:"
     DO i = 1, n_atoms
-        WRITE(616,FMT='(A4,3F12.8)') atom(i), (xyz(i,j), j=1,3)
+      WRITE(616,FMT='(A4,3F12.8)') atom(i), (xyz(i,j), j=1,3)
     ENDDO
     WRITE(616,FMT='(A33,I12,A22,E9.3,A22)') "Calculation at the step: ", steps, "; with a threshold: ", threshold, &
                                             " for dencity matrix"
@@ -244,21 +244,21 @@ OPEN(616,FILE='./tmp/out.out')
     WRITE(616,*) "The system has: "
     WRITE(616,*) 'Core Hamiltonian'
     DO i = 1, b_functions
-        DO j = i, b_functions
-            WRITE(616,FMT='(2I5,F16.8)') i, j, Hcore(i,j)
-        ENDDO
+      DO j = i, b_functions
+        WRITE(616,FMT='(2I5,F16.8)') i, j, Hcore(i,j)
+      ENDDO
     ENDDO
     WRITE(616,*) 'Fock Matrix'
     DO i = 1, b_functions
-        DO j = i, b_functions
-            WRITE(616,FMT='(2I5,F16.8)') i, j, F(i,j)
-        ENDDO
+      DO j = i, b_functions
+        WRITE(616,FMT='(2I5,F16.8)') i, j, F(i,j)
+      ENDDO
     ENDDO
     WRITE(616,*) 'Density Matrix'
     DO i = 1, b_functions
-        DO j = i, b_functions
-            WRITE(616,FMT='(2I5,F16.8)') i, j, P(i,j)
-        ENDDO
+      DO j = i, b_functions
+        WRITE(616,FMT='(2I5,F16.8)') i, j, P(i,j)
+      ENDDO
     ENDDO
 CLOSE(616)
 

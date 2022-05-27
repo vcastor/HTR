@@ -1,7 +1,7 @@
 ########################################################################
 #              Makefile to compile Hartree-Fock-Roothaan
 gg = gfortran                                                  #compiler
-lapack = -llapack                                         #library name
+lapack = -llapack                                          #library name
 objects = HartreeFockRoothaan
 
 $(objects): %: %.f90

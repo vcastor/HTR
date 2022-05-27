@@ -20,7 +20,7 @@ OPEN(11,FILE=input_name)
     ALLOCATE(atom(n_atoms), xyz(n_atoms,3))      !setting how many atoms
 
     DO i = 1, n_atoms                      !chemical symbol, coordinates
-        READ(11,*) atom(i), (xyz(i,j), j=1, 3)
+      READ(11,*) atom(i), (xyz(i,j), j=1, 3)
     ENDDO
 CLOSE(11)
 
