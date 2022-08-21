@@ -5,10 +5,10 @@ OutputFile=${InputFile%%.inp}.out
 ScratchFile=${InputFile%%.inp}.integrals
 QuoteFile=$((1 + $RANDOM % 45))
 
-cat ./writer/main_to_write/header > ${OutputFile}
+#cat ./writer/main_to_write/header > ${OutputFile}
 
 echo $1 > tmp.1
-echo `./HartreeFockRoothaan.exe < tmp.1`
+echo `./bin/xRHFR.exe < tmp.1`
 
 cat ./tmp/out.out >> ${OutputFile}
 

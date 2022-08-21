@@ -1,0 +1,16 @@
+           Number of atoms:   8
+ Number of basis functions:  12
+ Coordinates of the system in bohr:
+  H   0.00000000  0.00000000  0.00000000
+  Li  0.00000000  0.00000000  3.40150700
+  H   0.00000000  3.40150700  3.40150700
+  Li  0.00000000  3.40150700  0.00000000
+  H   3.40150700  0.00000000  3.40150700
+  Li  3.40150700  0.00000000  0.00000000
+  H   3.40150700  3.40150700  0.00000000
+  Li  3.40150700  3.40150700  3.40150700
+        Calculation at the step:           17  ; with a threshold: 0.369E-10    for dencity matrix
+                                         ATOMIC UNITS
+             N-N Coulomb Energy:  25.09317491
+             Electronic Energy:  -56.35698152
+             TOTAL ENERGY:       -31.26380661

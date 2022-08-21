@@ -23,17 +23,69 @@ from scipy.linalg import eigh
 import sympy as sp
 sp.init_printing()
 
-H2 = psi4.geometry("""
-0 1
-H 0.0000  0.0000 0.0000
-H 0.0000  0.0000 0.7414
-units angstrom
-""")
+def fdis2(x1, y1, z1, x2, y2, z2):
+        d2 = (x1-x2)**2 + (y1-y2)**2 + (z1-z3)**2
+        return d2
 
-psi4.set_options({'basis':'STO-3G'})
+def fcoulomb(q, Z, distance):
+        coulombnn = q*Z/distance
+        return coulombnn
 
-wfn = psi4.core.Wavefunction.build(H2)
-mints = psi4.core.MintsHelper(wfn.basisset())
+#--
+#READ the input file
+#--
+inpfile = open(inp, 'r')
+datainp = inpfile.readlines()
+basis = datainp[0]
+q = datainp[1]
+q = int(q)
+unit = datainp[2]
+na = datainp[3]
+na = int(na)
+atom = []
+x = []
+y = []
+z = []
+for i in range(na):
+        linen = datainp[i+5]
+        linen = linen.split()
+        atom.append = linen[0]
+        x.append    = linen[1]
+        y.append    = linen[2]
+        z.append    = linen[3]
+inpfile.close()
+
+#--
+#At basis
+#--
+
+#--
+#Distances
+#--
+
+for i in range(na):
+        for j in range(na):
+                dis2_a[i,j] = fdis2(x[i], y[i], z[i], x[j], y[j], z[j])
+                dis2_a[j,i] = dis2_a[i,j]
+                dis_a[i,j]  = np.sqrt(dis2_a[i,j])
+
+#--
+#Bron-Oppenheimer
+#--
+
+#--
+#Electrons and robitals
+#--
+n_ele = 0
+for i in range(na):
+        n_ele += a_num[i]
+
+n_ele -= q
+n_occ = n_occ/2
+
+#--
+#Integrals
+#--
 
 S = np.asarray(mints.ao_overlap())
 print("----------------Matriz S----------------")
