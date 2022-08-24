@@ -19,10 +19,8 @@ $(BDIR)/xRHFR.exe: $(OBJ)
 	$(gg) -o $@ $^ $(LIBS) $(FLAG)
 	@echo " ------------------------------------------------------ "
 	@echo "   HartreeFockRoothaan has been successfully compiled"
-	@echo " "
-	@echo "             run: ./launcher.sh input"
 	@echo " ------------------------------------------------------ "
 
 
 clean:
-	rm -f $(OBDIR).exe *.o *.mod *.a
+	rm -f $(ODIR)/*.o $(BDIR)/*.exe

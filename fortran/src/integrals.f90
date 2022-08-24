@@ -1,22 +1,22 @@
 !-----------------------------------------------------------------------
-!   This SUBROUTINE compute integrals for Roothaan Hartree-Fock
+!   This SUBROUTINE compute integrals for Roothaan Hartree-Fock        !
 !-----------------------------------------------------------------------
-! bf        :: number of basis functions
-! na        :: number of atoms
-! a_num     :: atomic numbers
-! n_pri_bf  :: number of primitive per basis functions
-! xyz       :: coordinates of atoms
-! xyz_bf    :: coordinates of basis functions
-! dis2_bf   :: squared distance between basis functions
-! max_prim  :: maximum number of primitives
-! max_zeta  :: maximum number of zeta
-! zeta      :: zeta values
-! d         :: d values NORMALIZED
-! S         :: Overlap integral
-! T         :: Kinetic integral
-! V         :: Potential integral
-! TwoEleInt :: Two electron integral
-! info      :: info flag
+! bf        :: number of basis functions                               !
+! na        :: number of atoms                                         !
+! a_num     :: atomic numbers                                          !
+! n_pri_bf  :: number of primitive per basis functions                 !
+! xyz       :: coordinates of atoms                                    !
+! xyz_bf    :: coordinates of basis functions                          !
+! dis2_bf   :: squared distance between basis functions                !
+! max_prim  :: maximum number of primitives                            !
+! max_zeta  :: maximum number of zeta                                  !
+! zeta      :: zeta values                                             !
+! d         :: d values NORMALIZED                                     !
+! S         :: Overlap integral                                        !
+! T         :: Kinetic integral                                        !
+! V         :: Potential integral                                      !
+! TwoEleInt :: Two electron integral                                   !
+! info      :: info flag                                               !
 !-----------------------------------------------------------------------
 SUBROUTINE INTEGRALS(bf, na, a_num, n_pri_bf, xyz, xyz_bf, dis2_bf, max_prim, max_zeta, zeta, d, S, T, V, TwoEleInt, info)
 IMPLICIT NONE
@@ -25,12 +25,12 @@ INCLUDE 'parameters.h'
 INTEGER                                           :: i, j, k, l, m, n, o, p, na, max_prim, max_zeta, bf, one_int, two_int, info
 INTEGER, DIMENSION(na)                            :: a_num
 INTEGER, DIMENSION(bf)                            :: n_pri_bf
-REAL (KIND=8)                                     :: OverLap, r_pq2, Kkl, Kmn, phi_four, rho
+REAL (KIND=8)                                     :: OverLap, r_pq2, Kkl, Kmn, phi_four, rho, kfact
 REAL (KIND=8)                                     :: Kinetic, NucEleC, r_pm2
 REAL (KIND=8), EXTERNAL                           :: f_distance2, f_cero
 REAL (KIND=8), DIMENSION(3)                       :: r_p, r_q
-REAL (KIND=8), DIMENSION(na,3)                    :: xyz
-REAL (KIND=8), DIMENSION(bf,3)                    :: xyz_bf
+REAL (KIND=8), DIMENSION(3,na)                    :: xyz
+REAL (KIND=8), DIMENSION(3,bf)                    :: xyz_bf
 REAL (KIND=8), DIMENSION(max_zeta,max_prim)       :: zeta, d
 REAL (KIND=8), DIMENSION(bf,bf)                   :: S, T, V, dis2_bf
 REAL (KIND=8), DIMENSION(bf,bf,bf,bf)             :: TwoEleInt
@@ -54,6 +54,15 @@ DO i = 1, bf
 ENDDO
 
 !-----------------------------------------------------------------------
+! K_{...} has always the factor (DSQRT(2.d0)*(pi**(5.d0/4.d0)), and
+!         since we will multiply those factors as:
+!         K_{k, \mu, l, \nu} * K_{m, \lambda, n, \sigma} =
+!         (DSQRT(2.d0)*(pi**(5.d0/4.d0))**2 ...
+!         we save it in memory
+
+kfact = 2.d0*pi**(5.d0/2.d0)
+
+!-----------------------------------------------------------------------
 ! How many one- & two-electron unique integrals the system has.
 ! Counting as Gaussian 10 years old.
 
@@ -69,30 +78,28 @@ DO i = 1, bf
   DO j = i, bf
     DO k = 1, n_pri_bf(i)
       DO l = 1, n_pri_bf(j)
-        r_p(:)   = (zeta(i,k)*xyz_bf(i,:) + zeta(j,l)*xyz_bf(j,:))/zeta_escalar(i,k,j,l)
+        r_p(:)   = (zeta(i,k)*xyz_bf(:,i) + zeta(j,l)*xyz_bf(:,j))/zeta_escalar(i,k,j,l)
         OverLap  = DEXP(-xi_escalar(i,k,j,l)*dis2_bf(i,j)) * (pi/zeta_escalar(i,k,j,l))**(3.d0/2.d0)
         S(i,j)   = S(i,j) + d(i,k)*d(j,l)*OverLap
         Kinetic  = xi_escalar(i,k,j,l)*(3.d0-(2.d0*xi_escalar(i,k,j,l)*dis2_bf(i,j)))*OverLap
         T(i,j)   = T(i,j) + d(i,k)*d(j,l)*Kinetic
         NucEleC  = 0.d0
         DO m = 1, na
-          r_pm2 = f_distance2(r_p(:), xyz(m,:))
-          !IF ( r_pm .LE. 1.D-5 )                                                 ! distance of basis i, j and the nuclei is zero
+          r_pm2   = f_distance2(r_p(:), xyz(:,m))
           NucEleC = NucEleC +2.d0*a_num(m)*DSQRT(zeta_escalar(i,k,j,l)/pi)*OverLap*f_cero(zeta_escalar(i,k,j,l)*r_pm2)
         ENDDO
         V(i,j) = V(i,j) - d(i,k)*d(j,l)*NucEleC
-        Kkl    = (DSQRT(2.d0)*(pi**(5.d0/4.d0))/zeta_escalar(i,k,j,l))*DEXP(-xi_escalar(i,k,j,l)*dis2_bf(i,j))
+        Kkl    = (1.d0/zeta_escalar(i,k,j,l))*DEXP(-xi_escalar(i,k,j,l)*dis2_bf(i,j))
         DO m = 1, bf
           DO n = m, bf
             IF ((j*(j+1)/2 +i).GE.(n*(n+1)/2 +m)) THEN
               DO o = 1, n_pri_bf(m)
                 DO p = 1, n_pri_bf(n)
-                  r_q(:)    = (zeta(m,o)*xyz_bf(m,:) + zeta(n,p)*xyz_bf(n,:))/zeta_escalar(m,o,n,p)
-                  Kmn       = (DSQRT(2.d0)*(pi**(5.d0/4.d0))/zeta_escalar(m,o,n,p))*DEXP(-xi_escalar(m,o,n,p)*dis2_bf(m,n))
+                  r_q(:)    = (zeta(m,o)*xyz_bf(:,m) + zeta(n,p)*xyz_bf(:,n))/zeta_escalar(m,o,n,p)
+                  Kmn       = (1.d0/zeta_escalar(m,o,n,p))*DEXP(-xi_escalar(m,o,n,p)*dis2_bf(m,n))
                   rho       = (zeta_escalar(i,k,j,l)*zeta_escalar(m,o,n,p))/(zeta_escalar(i,k,j,l) + zeta_escalar(m,o,n,p))
                   r_pq2     = f_distance2(r_p(:), r_q(:))
-                  phi_four  = (Kkl*Kmn/DSQRT(zeta_escalar(i,k,j,l)+zeta_escalar(m,o,n,p)))*f_cero(rho*r_pq2)
-                  !IF (r_pq .LE. 1.D-5) THEN 
+                  phi_four  = (kfact*Kkl*Kmn/DSQRT(zeta_escalar(i,k,j,l)+zeta_escalar(m,o,n,p)))*f_cero(rho*r_pq2)
                   TwoEleInt(i,j,m,n) = TwoEleInt(i,j,m,n) + d(i,k)*d(j,l)*d(m,o)*d(n,p)*phi_four
                 ENDDO
               ENDDO

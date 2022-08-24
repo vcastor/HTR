@@ -1,17 +1,29 @@
 !-----------------------------------------------------------------------
-!   This SUBROUTINE gets the data about the basis set
-! basis_set :: basis set name
-! na        :: number of atoms
-! max_bf    :: maximum number of basis functions
-! max_prim  :: maximum number of primitives
-! max_zeta  :: maximum number of zeta
-! info      :: info flag
+!   This SUBROUTINE gets the maxima size values for the memory         !
+!   about the basis set that we'll use and if we have that basis set   !
+! basis_set :: basis set name                                          !
+! na        :: number of atoms                                         !
+! max_bf    :: maximum number of basis functions                       !
+! max_prim  :: maximum number of primitives                            !
+! max_zeta  :: maximum number of zeta                                  !
+! info      :: info flag                                               !
 !-----------------------------------------------------------------------
 SUBROUTINE BASIS_MAX(basis_set, na, max_bf, max_prim, max_zeta, info)
 IMPLICIT NONE
 INTEGER           :: na, max_bf, max_prim, info, max_zeta
 CHARACTER(LEN=15) :: basis_set
 CHARACTER(LEN=50) :: general_data
+
+SELECTCASE (basis_set)
+  CASE('STO-3G')
+    info = 0
+  CASE('6-31G')
+    info = 0
+  CASE DEFAULT
+    info = 201
+ENDSELECT
+
+CALL WIZARD(info)
 
 general_data="../basis/"//TRIM(basis_set)//"/data_of_basis.dat"
 

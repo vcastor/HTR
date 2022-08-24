@@ -31,7 +31,20 @@
 
     coulomb = q*Z/distance
 
-    ENDFUNCTION f_coulomb
+    ENDFUNCTION
+!***********************************************************************
+    FUNCTION f_trace_mat(n, A) RESULT (tr)
+    IMPLICIT NONE
+    INTEGER                      :: i, n
+    REAL(KIND=8)                 :: tr
+    REAL(KIND=8), DIMENSION(n,n) :: A
+
+    tr = 0.d0
+    DO i = 1, n
+      tr = tr + A(i,i)
+    ENDDO
+
+    ENDFUNCTION
 !***********************************************************************
     FUNCTION f_cero(x) RESULT (y)
     IMPLICIT NONE

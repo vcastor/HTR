@@ -3,13 +3,13 @@
 ! computed ok
 !***********************************************************************
 
-SUBROUTINE WRITER(na, bf, atom, xyz, steps, threshold, Enn, E_ele, Hcore, F, P)
+SUBROUTINE WRITER(na, bf, atom, xyz, steps, threshold, Enn, E_ele)
 
 IMPLICIT NONE
 INTEGER                         :: na, bf, steps, i, j
 REAL (KIND=8)                   :: threshold, Enn, E_ele
-REAL (KIND=8), DIMENSION(na, 3) :: xyz
-REAL (KIND=8), DIMENSION(bf,bf) :: Hcore, F, P
+REAL (KIND=8), DIMENSION(3,na)  :: xyz
+!REAL (KIND=8), DIMENSION(bf,bf) :: Hcore, F, P
 CHARACTER(LEN=2), DIMENSION(na) :: atom
 
 OPEN(616,FILE='../tmp/out.out')
@@ -17,7 +17,7 @@ OPEN(616,FILE='../tmp/out.out')
     WRITE(616,FMT='(A28,I3)') "Number of basis functions: ", bf
     WRITE(616,*) "Coordinates of the system in bohr:"
     DO i = 1, na
-        WRITE(616,FMT='(A4,3F12.8)') atom(i), (xyz(i,j), j=1,3)
+      WRITE(616,FMT='(A4,3F12.8)') atom(i), (xyz(j,i), j=1,3)
     ENDDO
     WRITE(616,FMT='(A33,I12,A22,E9.3,A22)') "Calculation at the step: ", steps, "; with a threshold: ", threshold, &
                                             " for dencity matrix"

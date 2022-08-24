@@ -1,11 +1,11 @@
 !-----------------------------------------------------------------------
-!   This SUBROUTINE fill a matrix with $V_{n,n}$ at BO approximation
-!             Nucleus-Nucleus Born-Oppenheimer Interaction
-! na      :: number of atoms
-! dis_mat :: distance between nuclei matrix
-! a_num   :: atomic number 
-! Ennmat  :: Matrix classic coulomb energy
-! Enn     :: Sum of classic coulomb energy
+!   This SUBROUTINE fill a matrix with $V_{n,n}$ at BO approximation   !
+!-------------Nucleus-Nucleus Born-Oppenheimer Interaction-------------!
+! na      :: number of atoms                                           !
+! dis_mat :: distance between nuclei matrix                            !
+! a_num   :: atomic number                                             !
+! Ennmat  :: Matrix classic coulomb energy                             !
+! Enn     :: Sum of classic coulomb energy                             !
 !-----------------------------------------------------------------------
 SUBROUTINE NNBOI(na, dis_mat, a_num, Ennmat, Enn)
 

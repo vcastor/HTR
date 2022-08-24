@@ -14,7 +14,6 @@ INTEGER            :: q, na, info
 CHARACTER(LEN=15)  :: basis_set, units
 CHARACTER(LEN=100) :: input_name
 
-WRITE(*,*) input_name
 OPEN(11,FILE=input_name)
     READ(11,*) basis_set
     READ(11,*) q 
@@ -42,5 +41,7 @@ SELECTCASE (units)
     CASE DEFAULT
         info = 101
 ENDSELECT
+
+IF (na .LE. 0) info = 102
 
 ENDSUBROUTINE OPT_READER

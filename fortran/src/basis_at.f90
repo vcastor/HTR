@@ -1,22 +1,24 @@
 !-----------------------------------------------------------------------
-!   This SUBROUTINE gets the data about the basis set
-! basis_set :: basis set name
-! na        :: number of atoms
-! atom      :: atom chemical symbol
-! bf        :: number of basis functions
-! a_num     :: atomic number
-! n_bf_pa   :: number of basis functions per atom
-! n_pri_bf  :: number of primitives per basis function
-! max_bf    :: maximum number of basis function
-! max_prim  :: maximum number of primitives
-! max_z     :: maximum number of zeta
-! zeta      :: zeta values 
-! d         :: d_{i,j}
-! info      :: info flag
+!   This SUBROUTINE gets the data about the basis set for the system   !
+! basis_set :: basis set name                                          !
+! na        :: number of atoms                                         !
+! atom      :: atom chemical symbol                                    !
+! bf        :: number of basis functions                               !
+! a_num     :: atomic number                                           !
+! n_bf_pa   :: number of basis functions per atom                      !
+! n_pri_bf  :: number of primitives per basis function                 !
+! max_bf    :: maximum number of basis function                        !
+! max_prim  :: maximum number of primitives                            !
+! max_z     :: maximum number of zeta                                  !
+! zeta      :: zeta values                                             !
+! d         :: d_{i,j} NORMALIZED                                      !
+! info      :: info flag                                               !
 !-----------------------------------------------------------------------
+!
+!-----------------------------------------------------------------------------------------------------------------------------------
 SUBROUTINE BASIS_AT(basis_set, na, atom, bf, a_num, n_bf_pa, n_pri_bf, max_bf, max_prim, max_zeta, zeta, d, info)
 IMPLICIT NONE
-INTEGER                                     :: i, j, k, l, na, bf, max_bf, max_prim, max_zeta, info
+INTEGER                                     :: i, j, k, l, na, bf, info, max_bf, max_prim, max_zeta
 INTEGER, DIMENSION(na)                      :: a_num, n_bf_pa
 INTEGER, DIMENSION(max_zeta)                :: n_pri_bf
 INTEGER, DIMENSION(:,:), ALLOCATABLE        :: n_prim
@@ -27,8 +29,9 @@ CHARACTER(LEN=2), DIMENSION(na)             :: atom
 CHARACTER(LEN=30), DIMENSION(na)            :: file_basis_set
 !-----------------------------------------------------------------------------------------------------------------------------------
 
-ALLOCATE(n_prim(na, max_bf), zeta_atom(na, max_bf, max_prim), d_atom(na, max_bf, max_prim))   
 !                                     (at atom, at basis, at Gaussian primitive) 
+ALLOCATE(n_prim(na, max_bf), zeta_atom(na, max_bf, max_prim), d_atom(na, max_bf, max_prim))   
+
 DO i = 1, na
   file_basis_set(i) = "../basis/"//TRIM(basis_set)//"/"//TRIM(atom(i))//".dat"
 ENDDO
@@ -56,7 +59,7 @@ ENDDO
 l = l - 1
 
 IF (l .NE. bf) THEN
-  info = 201
+  info = 201       !counters must be equal
 ENDIF
 
 ENDSUBROUTINE BASIS_AT
