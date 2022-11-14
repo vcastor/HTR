@@ -1,6 +1,6 @@
 !-----------------------------------------------------------------------
 ! This SUBROUTINE computes an orthogonalization for the problem:       !
-! ~~~~~~~~~~~~~~~~~~~~~~~~~~~~  B = A^(-1/2)  ~~~~~~~~~~~~~~~~~~~~~~~~~!
+! ****************************  B = A^(-1/2)  ************************ !
 ! n    :: size of matrices                                             !
 ! A    :: input matrix                                                 !
 ! B    :: output matrix                                                !

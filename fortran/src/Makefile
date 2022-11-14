@@ -1,7 +1,7 @@
 ########################################################################
 #              Makefile to compile Hartree-Fock-Roothaan
 IDIR =../include
-BDIR =../bin
+BDIR =..
 ODIR = obj
 SDIR =.
 gg = gfortran -I$(IDIR)                                        #compiler

@@ -66,11 +66,11 @@ kfact = 2.d0*pi**(5.d0/2.d0)
 ! How many one- & two-electron unique integrals the system has.
 ! Counting as Gaussian 10 years old.
 
-one_int = bf*(bf+1)/2                    !how many overlap, kinetic and nuclear atraction integrals we have
-two_int = one_int*(one_int+1)/2          !how many two integrals we have
+one_int = bf*(bf+1)/2                                             !how many overlap, kinetic and nuclear atraction integrals we have
+two_int = one_int*(one_int+1)/2                                   !how many two integrals we have
 
 !-----------------------------------------------------------------------------------------------------------------------------------
-!---- Overlap Integrals (S), Kinetic Integrals (T), Nucleus-Electron Coulomb Integrals (V) and Two Electron Integrals 
+!****       Overlap Integral (S), Kinetic Integral (T), Nucleus-Electron Coulomb Integral (V) and Two Electron Integral         ****
 
 S(:,:) = 0.d0; T(:,:) = 0.d0; V(:,:) = 0.d0; TwoEleInt(:,:,:,:) = 0.d0                                             !Starting the sum
 
@@ -111,29 +111,31 @@ DO i = 1, bf
   ENDDO
 ENDDO
 info = 0
-!-----------------------------------------------------------------------
-! Is the same interaction with the particle 1 and particle 2 as
-! the particle 2 with 1 for S, V and T.
-!         S_{ij} = S_{ji};   V_{ij} = V_{ji};   T_{ij} = T_{ji}
-! For the two electron integrals the interaction symmetry, since our
-! $\phi$ are real, is:
-! (ij|kl) = (ij|lk) = (ji|kl) = (ji|lk) = (kl|ij) = (kl|ji) = (lk|ij)
-!   ...   = (lk|ji)
-! We just full fill the tensors with these redundancy.
-! Also write on a temporal files.
-!-----------------------------------------------------------------------
-!OPEN (501, FILE='./tmp/Overlap.int'); OPEN (502, FILE='./tmp/Potential.int')
-!OPEN (503, FILE='./tmp/Kinetic.int'); OPEN (504, FILE='./tmp/TwoElectron.int')  
 
-!WRITE(501,*) one_int; WRITE(502,*) one_int
-!WRITE(503,*) one_int; WRITE(504,*) two_int
+!-----------------------------------------------------------------------
+! It's the same interaction with the particle 1 and particle 2 as      !
+! the particle 2 with 1 for S, V and T.                                !
+!         S_{ij} = S_{ji};   V_{ij} = V_{ji};   T_{ij} = T_{ji}        !
+! For the two electron integrals the interaction symmetry, since our   !
+! $\phi$ are real, is:                                                 !
+! (ij|kl) = (ij|lk) = (ji|kl) = (ji|lk) = (kl|ij) = (kl|ji) = (lk|ij)  !
+!   ...   = (lk|ji)                                                    !
+! We just full fill the tensors with these redundancy.                 !
+!-----------------------------------------------------------------------
+
+OPEN (501, FILE='./tmp/Overlap.int'); OPEN (502, FILE='./tmp/Potential.int')
+OPEN (503, FILE='./tmp/Kinetic.int'); OPEN (504, FILE='./tmp/TwoElectron.int')  
+
+WRITE(501,*) one_int; WRITE(502,*) one_int
+WRITE(503,*) one_int; WRITE(504,*) two_int
 
 DO i = 1, bf
   DO j = i, bf
 
-!    WRITE(501,FMT='(2I5,F24.16)') i, j, S(i,j); IF (ISNAN(S(i,j))) info = 501
-!    WRITE(502,FMT='(2I5,F24.16)') i, j, V(i,j); IF (ISNAN(V(i,j))) info = 502
-!    WRITE(503,FMT='(2I5,F24.16)') i, j, T(i,j); IF (ISNAN(T(i,j))) info = 503
+    WRITE(501,FMT='(2I5,F24.16)') i, j, S(i,j); IF (ISNAN(S(i,j))) info = 501
+    WRITE(502,FMT='(2I5,F24.16)') i, j, V(i,j); IF (ISNAN(V(i,j))) info = 502
+    WRITE(503,FMT='(2I5,F24.16)') i, j, T(i,j); IF (ISNAN(T(i,j))) info = 503
+
     IF ((i.NE.j)) THEN
       S(j,i) = S(i,j);      V(j,i) = V(i,j);      T(j,i) = T(i,j)
     ENDIF
@@ -141,7 +143,7 @@ DO i = 1, bf
     DO k = 1, bf
       DO l = k, bf
         IF ((j*(j+1)/2 +i).GE.(l*(l+1)/2 +k)) THEN
-!          WRITE(504,FMT='(4I5,F24.16)') i, j, k, l, TwoEleInt(i,j,k,l)
+          WRITE(504,FMT='(4I5,F24.16)') i, j, k, l, TwoEleInt(i,j,k,l)
           IF (ISNAN(TwoEleInt(i,j,l,k))) info = 504
           IF (.NOT.((i.EQ.j).AND.(j.EQ.k).AND.(k.EQ.l))) THEN
             TwoEleInt(i,j,l,k) = TwoEleInt(i,j,k,l)
@@ -160,6 +162,6 @@ DO i = 1, bf
   S(i,i) = 1.d0                               !S_{i,i} analitically is 1
 ENDDO
 
-!CLOSE(501); CLOSE(502); CLOSE(503); CLOSE(504)  
+CLOSE(501); CLOSE(502); CLOSE(503); CLOSE(504)  
 
 ENDSUBROUTINE INTEGRALS

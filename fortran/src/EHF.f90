@@ -23,5 +23,6 @@ EK = f_trace_mat(bf, MATMUL(P,Km))
 
 E_ele = ET + EV + EJ - 0.5d0*EK
 E_ele = 2.d0*E_ele
+!E_ele = 2.d0*(ET + EV + EJ) - EK
 
 ENDSUBROUTINE EHF

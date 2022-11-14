@@ -1,29 +1,47 @@
 #!/bin/bash
 
 InputFile=$1
-OutputFile=${InputFile%%.inp}.out
+
+if $2; then
+  OutputFile=$2
+else
+  OutputFile=${InputFile%%.inp}.out
+fi
+
 ScratchFile=${InputFile%%.inp}.integrals
-QuoteFile=$((1 + $RANDOM % 45))
+QuoteFile=$(($RANDOM % 45))
 
-#cat ./writer/main_to_write/header > ${OutputFile}
+cat ./writer/header > ${OutputFile}
 
-echo $1 > tmp.1
-echo `./bin/xRHFR.exe < tmp.1`
+./bin/xRHFR.exe $1
 
-cat ./tmp/out.out >> ${OutputFile}
+if [[ ! -f "./tmp/summary.out" ]]; then
 
-echo "*******UNIQUE OVERLAP MATRIX VALUES*******" >> ${OutputFile}
-cat ./tmp/Overlap.int >> ${OutputFile}
+  cat ./tmp/summary.out >> ${OutputFile}
 
-echo "*******UNIQUE KINETIC MATRIX VALUES*******" >> ${OutputFile}
-cat ./tmp/Kinetic.int >> ${OutputFile}
+  if ( $2 && $2 == "integrals" ); then
 
-echo "******UNIQUE POTENTIAL MATRIX VALUES******" >> ${OutputFile}
-cat ./tmp/Potential.int >> ${OutputFile}
+    echo "*******UNIQUE OVERLAP MATRIX VALUES*******" >> ${OutputFile}
+    cat ./tmp/Overlap.int >> ${OutputFile}
+  
+    echo "*******UNIQUE KINETIC MATRIX VALUES*******" >> ${OutputFile}
+    cat ./tmp/Kinetic.int >> ${OutputFile}
+    
+    echo "******UNIQUE POTENTIAL MATRIX VALUES******" >> ${OutputFile}
+    cat ./tmp/Potential.int >> ${OutputFile}
+    
+    echo "*****UNIQUE TWO ELECTRON MATRIX VALUES****" >> ${OutputFile}
+    cat ./tmp/TwoElectron.int >> ${OutputFile}
+    
+  fi
 
-echo "*****UNIQUE TWO ELECTRON MATRIX VALUES****" >> ${OutputFile}
-cat ./tmp/TwoElectron.int >> ${OutputFile}
+  cat ./writer/succesfull_quotes/${QuoteFile} >> ${OutputFile}
 
-cat ./writer/succesfull_quotes/${QuoteFile} >> ${OutputFile}
+else
 
-rm tmp.1 ./tmp/out.out ./tmp/Overlap.int ./tmp/Kinetic.int ./tmp/Potential.int ./tmp/TwoElectron.int
+  if 
+  cat ./tmp/error.out >> ${OutputFile}
+
+fi
+
+rm -f ./tmp/out.out ./tmp/Overlap.int ./tmp/Kinetic.int ./tmp/Potential.int ./tmp/TwoElectron.int

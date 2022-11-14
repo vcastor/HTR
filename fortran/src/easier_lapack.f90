@@ -4,9 +4,9 @@
 !-----------------------------------------------------------------------
 !***********************************************************************
 ! The next SUBROUTINES are no more than the LAPACK SUBROUTINES that    !
-! the RHFR program calls. We are just avoiling compute explicitly every!
-! single time values like: 'work', 'iwork', 'lwork', ... in the main   !
-! program.                                                             !
+! the RHFR program calls. We are just avoiling compute explicitly      !
+! every single time values like: 'work', 'iwork', 'lwork', ...         !
+! in the main program.                                                 !
 !***********************************************************************
     SUBROUTINE DIAG_M(n, A, B)
     ! Diagonalize the matrix A                                         !

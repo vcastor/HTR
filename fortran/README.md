@@ -1,23 +1,25 @@
-# Welcome to Hartree-Fock-Roothaan on FORTRAN :rocket:
+# Welcome to Hartree-Fock-Roothaan (FORTRAN version) :rocket:
 
-Hiya, I'm the README file, and I was made to say some little things about the
-program that you already have.
+For more knowlagment about HF method, there is a pdf with some explanations
+about the theory level. Don't be shy to send me a message if something isn't
+written propertly or you have questions.
 
 ## Compiling
 
-Just type: `make` on your terminal at the directory where is the source code
-and sub-directories given on the same download.
+Just type: `make` on your terminal at the directory where is the source code.
 
-If that didn't work correctly I'll give you answer of the problems that you
+If that didn't work correctly I'll give you the answer of the problems that you
 might have.
 
-First of all you need a fortran compiler, I recomend gfortran, even its written
-on C/C++, is more robust and extended use. Intel Fortran Compiler, NVIDIA
-nvfortran and AMD flang are developed just specifically for their owns
-architectures. Also gfortran is free and can be used on Linux, macOS, its
-free, and its which we used :grimacing:. However, you can change for your
-favorite compiler in the `Makefile`, if you don't have any compiler, once again,
-I recomend GNU Compiler Collection (its not only fortran compiler, can also
+First of all you need a fortran compiler, I recomend gfortran, even if its
+written on C/C++, is more robust and extended use than other compilers. Intel
+Fortran Compiler, NVIDIA nvfortran and AMD flang are developed just
+specifically for their owns architectures.
+
+Also gfortran is free and can be used on Linux, macOS and its which we used
+:grimacing:. However, of course you can change it for your favorite compiler in
+the `Makefile`. If you don't have any compiler, once again, I recomend [GNU
+Compiler Collection] (http://...) (its not only fortran compiler, it can also
 compile: `C`, `C++`, `Objective-C`, `Ada`, `Go`, and `D`).
 
 <hr style="border:2px solid gray"> </hr>
@@ -29,28 +31,31 @@ computer doesn't have the library you will have an error like:
 >`"_dsygvd_", referenced from:`
 > `     _MAIN__ in ccZlxZJJ.o`
 
-Therefore, the problem can be fixed just intalling LAPACK library. In case that
-you have it but doesn't not compailing neither, is because you have it in not
-the usual directory that I'm supposing, just modify the `Makefile` at line
-where we call the library in the compaling.
+Therefore, the problem above can be fixed just intalling LAPACK library. In
+case that you have it but doesn't compailing neither, is because you have it in
+a unusual directory, not in one that I'm supposing in the Makefile, just modify
+the `Makefile` at the line where we call the library in the compaling.
 
 <hr style="border:2px solid gray"> </hr>
 
-Fundamental Theorem of Computing: turn off, turn on and try again. That would
-fix also the error of LAPACK if you just installed on the same terminal session
-and maybe is necessary to restart the `$PATH` turning off/on the terminal
-session.
+Fundamental Theorem of Computing: turn off, turn on and try again.
+If you alredy installed LAPACK and you're trying to compile on the same terminal
+session maybe its necessary to restart the `$PATH`, you can type the
+command `~/.bash_profile` or just open a new terminal.
+
+If you have any other issue, you can send me a message, I'll try to help you, but
+also try to google it, there aren't many ways that the compilation doesn't work
+propertly.
 
 ## How run a calculation :wink:
 
 On the same directory is a laucher call it `launcher.sh` (I have a lot of
-creativity I know :blush:). The laucnher would have the excecutable permissions, if it
+creativity, I know :blush:). The laucnher would have the excecutable permissions, if it
 doesn't have give it with the next command:
 
 > `chmod +x launcher.sh`
 
-To send the calculation just give the input as an argument of the launcher, I
-did it like this because is easer use the `TAB` key for name input names.
+To send the calculation just give the input as an argument of the launcher.
 Example:
 
 > `$ ./launcher.sh H2.inp &`

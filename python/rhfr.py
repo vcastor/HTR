@@ -1,4 +1,5 @@
 #!/opt/homebrew/bin/python3
+#!/usr/bin/python3
 #-----------------------------------------------------------------------
 #***********************************************************************
 #  =This program do the Rothaan method for Hartree-Fock calculation=
@@ -121,11 +122,11 @@ dis_bf  = np.zeros((bf,bf))
 dis2_bf = np.zeros((bf,bf))
 
 for i in range(na):
-        for j in range(i, na):
-                dis2_a[i][j] = f_distance2(xyz[:,i], xyz[:,j])
-                dis2_a[j][i] = dis2_a[i,j]
-                dis_a[i][j]  = np.sqrt(dis2_a[i][j])
-                dis_a[j][i]  = dis_a[i][j]
+    for j in range(i, na):
+        dis2_a[i][j] = f_distance2(xyz[:,i], xyz[:,j])
+        dis2_a[j][i] = dis2_a[i,j]
+        dis_a[i][j]  = np.sqrt(dis2_a[i][j])
+        dis_a[j][i]  = dis_a[i][j]
 
 k = 0
 for i in range(na):
@@ -241,6 +242,9 @@ for i in range(bf):
                     Two_ele[l][k][j][i] = Two_ele[i][j][k][l]
     S[i][i] = 1.0
 
+#-----------------------------------------------------------------------
+#                   SCF algorithm HARTREE FOCK ROOTHAAN
+#--
 H = T + V
 C = np.zeros((bf,bf))
 E_old = -1.0
@@ -289,8 +293,9 @@ while(not converged):
     else:
         E_old = E_elec
         
-print('Electronic Energy', E_elec)
-print('NN Energy', Enn)
+print('                     Atomic units')
+print('Electronic Energy: ', E_elec)
+print('NN Energy        : ', Enn)
 E_T = E_elec + Enn
-print("Total energy: ", E_T)
+print("Total energy:    : ", E_T)
 
